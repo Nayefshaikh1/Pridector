@@ -51,19 +51,32 @@ div[data-testid="stRadio"] label { color: #e2e8f0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ─── Load Models ──────────────────────────────────────────────────────────────
+# ─── Load or Train Models ─────────────────────────────────────────────────────
 @st.cache_resource
 def load_models():
     project_dir = os.path.dirname(os.path.abspath(__file__))
     models_dir = os.path.join(project_dir, "models")
+    data_dir = os.path.join(project_dir, "data")
     mp, rp, wp = MatchPredictor(), RunsPredictor(), WicketsPredictor()
     try:
         mp.load(os.path.join(models_dir, "match_model.pkl"))
         rp.load(os.path.join(models_dir, "runs_model.pkl"))
         wp.load(os.path.join(models_dir, "wickets_model.pkl"))
         return mp, rp, wp, True
-    except:
-        return mp, rp, wp, False
+    except Exception:
+        # Auto-train if models not found (for cloud deployment)
+        from data.generate_data import main as generate_data
+        generate_data()
+        matches_df = pd.read_csv(os.path.join(data_dir, "matches.csv"))
+        batting_df = pd.read_csv(os.path.join(data_dir, "batting.csv"))
+        bowling_df = pd.read_csv(os.path.join(data_dir, "bowling.csv"))
+        mp.train(matches_df)
+        mp.save(os.path.join(models_dir, "match_model.pkl"))
+        rp.train(batting_df)
+        rp.save(os.path.join(models_dir, "runs_model.pkl"))
+        wp.train(bowling_df)
+        wp.save(os.path.join(models_dir, "wickets_model.pkl"))
+        return mp, rp, wp, True
 
 match_pred, runs_pred, wickets_pred, models_loaded = load_models()
 
@@ -80,14 +93,8 @@ with st.sidebar:
         st.metric("Match Accuracy", f"{match_pred.accuracy*100:.1f}%")
         st.metric("Runs MAE", f"{runs_pred.mae:.1f} runs")
         st.metric("Wickets MAE", f"{wickets_pred.mae:.2f}")
-    else:
-        st.error("⚠️ Models not found! Run `python train.py` first.")
     st.markdown("---")
     st.caption("Built with Scikit-learn, XGBoost & Streamlit")
-
-if not models_loaded:
-    st.warning("⚠️ Please run `python train.py` to train models first!")
-    st.stop()
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PAGE: Match Prediction
