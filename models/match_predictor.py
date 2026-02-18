@@ -86,17 +86,17 @@ class MatchPredictor:
         # Train multiple models and pick the best
         models = {
             "Random Forest": RandomForestClassifier(
-                n_estimators=200, max_depth=15, min_samples_split=5,
-                min_samples_leaf=2, random_state=42, n_jobs=-1
+                n_estimators=100, max_depth=12, min_samples_split=5,
+                min_samples_leaf=2, random_state=42, n_jobs=1
             ),
             "Gradient Boosting": GradientBoostingClassifier(
-                n_estimators=200, max_depth=6, learning_rate=0.1,
+                n_estimators=100, max_depth=6, learning_rate=0.1,
                 min_samples_split=5, random_state=42
             ),
             "XGBoost": XGBClassifier(
-                n_estimators=200, max_depth=6, learning_rate=0.1,
-                random_state=42, use_label_encoder=False,
-                eval_metric="mlogloss"
+                n_estimators=100, max_depth=6, learning_rate=0.1,
+                random_state=42, eval_metric="mlogloss",
+                n_jobs=1
             ),
         }
 

@@ -76,16 +76,16 @@ class RunsPredictor:
 
         models = {
             "Random Forest": RandomForestRegressor(
-                n_estimators=200, max_depth=15, min_samples_split=5,
-                min_samples_leaf=3, random_state=42, n_jobs=-1
+                n_estimators=100, max_depth=12, min_samples_split=5,
+                min_samples_leaf=3, random_state=42, n_jobs=1
             ),
             "Gradient Boosting": GradientBoostingRegressor(
-                n_estimators=200, max_depth=6, learning_rate=0.1,
+                n_estimators=100, max_depth=6, learning_rate=0.1,
                 min_samples_split=5, random_state=42
             ),
             "XGBoost": XGBRegressor(
-                n_estimators=200, max_depth=6, learning_rate=0.1,
-                random_state=42
+                n_estimators=100, max_depth=6, learning_rate=0.1,
+                random_state=42, n_jobs=1
             ),
         }
 
