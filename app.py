@@ -13,6 +13,8 @@ from models.match_predictor import MatchPredictor
 from models.runs_predictor import RunsPredictor
 from models.wickets_predictor import WicketsPredictor
 from data.generate_data import TEAMS, VENUES, BATSMEN, BOWLERS, TEAM_STRENGTH
+from data.generate_ipl_data import (IPL_TEAMS, IPL_VENUES, IPL_PLAYERS,
+                                     IPL_TEAM_STRENGTH, IPL_TEAM_SHORT)
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Cricket Prediction AI", page_icon="🏏", layout="wide",
@@ -80,13 +82,26 @@ def load_models():
 
 match_pred, runs_pred, wickets_pred, models_loaded = load_models()
 
+# Auto-generate IPL data if not present
+@st.cache_resource
+def ensure_ipl_data():
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    ipl_path = os.path.join(data_dir, "ipl.csv")
+    if not os.path.exists(ipl_path):
+        from data.generate_ipl_data import generate_ipl_data
+        ipl_df = generate_ipl_data(2000)
+        ipl_df.to_csv(ipl_path, index=False)
+    return True
+
+ensure_ipl_data()
+
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("# 🏏 Cricket AI")
     st.markdown("---")
     page = st.radio("Navigate", ["🏆 Match Prediction", "🏏 Runs Prediction",
                                    "🎯 Wickets Prediction", "📊 Data Explorer",
-                                   "📝 Add Data"],
+                                   "🏆 IPL Explorer", "📝 Add Data"],
                     label_visibility="collapsed")
     st.markdown("---")
     if models_loaded:
@@ -301,6 +316,177 @@ elif page == "📊 Data Explorer":
         st.warning("Data files not found. Run `python train.py` first!")
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# PAGE: IPL Match Prediction
+# ═══════════════════════════════════════════════════════════════════════════════
+elif page == "🏆 IPL Prediction":
+    st.markdown("# 🏆 IPL Match Prediction")
+    st.markdown("*Predict which IPL team will win based on match conditions*")
+    st.markdown("---")
+
+    if not ipl_models_loaded or not ipl_match_pred:
+        st.error("❌ IPL models not loaded. Please regenerate data and retrain.")
+    else:
+        col1, col2 = st.columns(2)
+        with col1:
+            ipl_team1 = st.selectbox("🏏 Team 1", IPL_TEAMS, index=0, key="ipl_t1")
+        with col2:
+            ipl_team2_opts = [t for t in IPL_TEAMS if t != ipl_team1]
+            ipl_team2 = st.selectbox("🏏 Team 2", ipl_team2_opts, index=0, key="ipl_t2")
+
+        # Show team abbreviations
+        st.markdown(f"**{IPL_TEAM_SHORT.get(ipl_team1, '')} vs {IPL_TEAM_SHORT.get(ipl_team2, '')}**")
+
+        col3, col4 = st.columns(2)
+        with col3:
+            ipl_venue = st.selectbox("🏟️ Venue", list(IPL_VENUES.keys()), key="ipl_v")
+        with col4:
+            ipl_toss_winner = st.selectbox("🪙 Toss Winner", [ipl_team1, ipl_team2], key="ipl_tw")
+        ipl_toss_decision = st.selectbox("🪙 Toss Decision", ["bat", "field"], key="ipl_td")
+
+        ipl_venue_info = IPL_VENUES[ipl_venue]
+        t1_home = 1 if ipl_venue_info["home_team"] == ipl_team1 else 0
+        t2_home = 1 if ipl_venue_info["home_team"] == ipl_team2 else 0
+
+        # Show venue info
+        c1, c2, c3 = st.columns(3)
+        c1.metric("🏟️ City", ipl_venue_info["city"])
+        c2.metric("🏏 Pitch", ipl_venue_info["pitch"].title())
+        home_text = "🏠 " + (ipl_team1 if t1_home else ipl_team2 if t2_home else "Neutral")
+        c3.metric("Home Team", home_text)
+
+        if st.button("🔮 Predict IPL Winner", use_container_width=True, type="primary"):
+            winner, probs = ipl_match_pred.predict(
+                ipl_team1, ipl_team2, ipl_venue, ipl_venue_info["pitch"],
+                "IPL", ipl_toss_winner, ipl_toss_decision, t1_home, t2_home,
+                IPL_TEAM_STRENGTH[ipl_team1], IPL_TEAM_STRENGTH[ipl_team2]
+            )
+            st.markdown("---")
+
+            winner_short = IPL_TEAM_SHORT.get(winner, winner)
+            st.markdown(f'<div class="prediction-card"><div class="winner-badge glow">🏆 {winner_short} WINS!</div><br><p style="color:#94a3b8;">{winner}</p></div>', unsafe_allow_html=True)
+
+            c1, c2, c3 = st.columns(3)
+            t1_short = IPL_TEAM_SHORT.get(ipl_team1, ipl_team1)
+            t2_short = IPL_TEAM_SHORT.get(ipl_team2, ipl_team2)
+            c1.metric(f"🏏 {t1_short}", f"{probs.get(ipl_team1, 0):.1f}%")
+            c2.metric(f"🏏 {t2_short}", f"{probs.get(ipl_team2, 0):.1f}%")
+            c3.metric("🏟️ Pitch", ipl_venue_info["pitch"].title())
+
+            # Win probability chart
+            fig = go.Figure(go.Bar(
+                x=[t1_short, t2_short],
+                y=[probs.get(ipl_team1, 0), probs.get(ipl_team2, 0)],
+                marker=dict(color=["#FFD700", "#8B5CF6"], line=dict(width=0)),
+                text=[f"{probs.get(ipl_team1, 0):.1f}%", f"{probs.get(ipl_team2, 0):.1f}%"],
+                textposition="auto"
+            ))
+            fig.update_layout(title="IPL Win Probability", template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#e2e8f0"), yaxis_title="Probability (%)")
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Head to head info
+            st.markdown("### 📊 Match Factors")
+            factors_col1, factors_col2 = st.columns(2)
+            with factors_col1:
+                st.markdown(f"**{t1_short} Strength:** {IPL_TEAM_STRENGTH[ipl_team1]}/100")
+                st.markdown(f"**Home Advantage:** {'Yes ✅' if t1_home else 'No ❌'}")
+            with factors_col2:
+                st.markdown(f"**{t2_short} Strength:** {IPL_TEAM_STRENGTH[ipl_team2]}/100")
+                st.markdown(f"**Home Advantage:** {'Yes ✅' if t2_home else 'No ❌'}")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PAGE: IPL Player Stats
+# ═══════════════════════════════════════════════════════════════════════════════
+elif page == "🏏 IPL Player Stats":
+    st.markdown("# 🏏 IPL Player Predictions")
+    st.markdown("*Predict runs and wickets for IPL players*")
+    st.markdown("---")
+
+    ipl_tab1, ipl_tab2 = st.tabs(["🏏 Runs Prediction", "🎯 Wickets Prediction"])
+
+    with ipl_tab1:
+        if not ipl_models_loaded or not ipl_runs_pred:
+            st.error("❌ IPL runs model not loaded.")
+        else:
+            ipl_bat_team = st.selectbox("Select IPL Team", IPL_TEAMS, key="ipl_bt")
+            batsmen_list = IPL_BATSMEN.get(ipl_bat_team, [])
+            batsman_names = [b["name"] for b in batsmen_list]
+            batsman_name = st.selectbox("Select Batsman", batsman_names, key="ipl_bn")
+            batsman_info = next((b for b in batsmen_list if b["name"] == batsman_name), batsmen_list[0])
+
+            col1, col2 = st.columns(2)
+            with col1:
+                ipl_bat_opp = st.selectbox("Opponent", [t for t in IPL_TEAMS if t != ipl_bat_team], key="ipl_bo")
+                ipl_bat_venue = st.selectbox("Venue", list(IPL_VENUES.keys()), key="ipl_bv")
+            with col2:
+                ipl_bat_pos = st.slider("Batting Position", 1, 8, 3, key="ipl_bp")
+
+            venue_info = IPL_VENUES[ipl_bat_venue]
+            is_home = 1 if venue_info["home_team"] == ipl_bat_team else 0
+
+            c1, c2, c3 = st.columns(3)
+            c1.metric("IPL Average", f"{batsman_info['avg']}")
+            c2.metric("Strike Rate", f"{batsman_info['sr']}")
+            c3.metric("Home Ground", "Yes ✅" if is_home else "No ❌")
+
+            if st.button("🔮 Predict IPL Runs", use_container_width=True, type="primary", key="ipl_runs_btn"):
+                runs, (low, high) = ipl_runs_pred.predict(
+                    batsman_name, ipl_bat_team, ipl_bat_opp, ipl_bat_venue,
+                    venue_info["pitch"], "IPL", batsman_info["avg"], batsman_info["sr"],
+                    batsman_info["style"], ipl_bat_pos, is_home, IPL_TEAM_STRENGTH[ipl_bat_opp]
+                )
+                st.markdown("---")
+                st.markdown(f'<div class="prediction-card"><div class="winner-badge glow">🏏 {runs} RUNS</div><br><p style="color:#94a3b8;margin-top:10px;">Expected Range: {low} - {high} runs</p></div>', unsafe_allow_html=True)
+
+                fig = go.Figure()
+                fig.add_trace(go.Indicator(mode="gauge+number", value=runs,
+                    title={"text": f"{batsman_name} - IPL Predicted Runs"},
+                    gauge={"axis":{"range":[0, 120]},
+                           "bar":{"color":"#FFD700"},
+                           "steps":[{"range":[0,low],"color":"rgba(139,92,246,0.2)"},
+                                    {"range":[low,high],"color":"rgba(247,201,72,0.3)"},
+                                    {"range":[high,120],"color":"rgba(139,92,246,0.1)"}]}))
+                fig.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="#e2e8f0"), height=350)
+                st.plotly_chart(fig, use_container_width=True)
+
+    with ipl_tab2:
+        if not ipl_models_loaded or not ipl_wickets_pred:
+            st.error("❌ IPL wickets model not loaded.")
+        else:
+            ipl_bowl_team = st.selectbox("Select IPL Team", IPL_TEAMS, key="ipl_wt")
+            bowlers_list = IPL_BOWLERS.get(ipl_bowl_team, [])
+            bowler_names = [b["name"] for b in bowlers_list]
+            bowler_name = st.selectbox("Select Bowler", bowler_names, key="ipl_wn")
+            bowler_info = next((b for b in bowlers_list if b["name"] == bowler_name), bowlers_list[0])
+
+            col1, col2 = st.columns(2)
+            with col1:
+                ipl_bowl_opp = st.selectbox("Opponent", [t for t in IPL_TEAMS if t != ipl_bowl_team], key="ipl_wo")
+                ipl_bowl_venue = st.selectbox("Venue", list(IPL_VENUES.keys()), key="ipl_wv")
+            with col2:
+                ipl_bowl_overs = st.slider("Overs to Bowl", 1, 4, 4, key="ipl_wov")
+
+            venue_info = IPL_VENUES[ipl_bowl_venue]
+            is_home = 1 if venue_info["home_team"] == ipl_bowl_team else 0
+
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Bowling Avg", f"{bowler_info['avg']}")
+            c2.metric("Economy", f"{bowler_info['econ']}")
+            c3.metric("Type", bowler_info["type"].title())
+
+            if st.button("🔮 Predict IPL Wickets", use_container_width=True, type="primary", key="ipl_wick_btn"):
+                wickets, (low, high) = ipl_wickets_pred.predict(
+                    bowler_name, ipl_bowl_team, ipl_bowl_opp, ipl_bowl_venue,
+                    venue_info["pitch"], "IPL", bowler_info["avg"], bowler_info["sr"],
+                    bowler_info["econ"], bowler_info["type"], is_home,
+                    IPL_TEAM_STRENGTH[ipl_bowl_opp], ipl_bowl_overs
+                )
+                st.markdown("---")
+                st.markdown(f'<div class="prediction-card"><div class="winner-badge glow">🎯 {wickets} WICKETS</div><br><p style="color:#94a3b8;margin-top:10px;">Expected Range: {low} - {high} wickets</p></div>', unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # PAGE: Add Data
 # ═══════════════════════════════════════════════════════════════════════════════
 elif page == "📝 Add Data":
@@ -494,3 +680,212 @@ elif page == "📝 Add Data":
         c3.metric("🎯 Bowling Records", f"{w_count:,}")
     except:
         st.warning("No data files found yet.")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PAGE: IPL Explorer
+# ═══════════════════════════════════════════════════════════════════════════════
+elif page == "🏆 IPL Explorer":
+    st.markdown("# 🏆 IPL Data Explorer")
+    st.markdown("*Explore Indian Premier League match data, team stats & trends*")
+    st.markdown("---")
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+
+    try:
+        ipl_df = pd.read_csv(os.path.join(data_dir, "ipl.csv"))
+
+        # Summary metrics
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("🏏 Total Matches", f"{len(ipl_df):,}")
+        c2.metric("🏟️ Venues", f"{ipl_df['venue'].nunique()}")
+        c3.metric("📅 Seasons", f"{ipl_df['season'].nunique()}")
+        c4.metric("🏆 Teams", f"{ipl_df['winner'].nunique()}")
+
+        st.markdown("---")
+
+        # Tabs for different views
+        ipl_tab1, ipl_tab2, ipl_tab3, ipl_tab4, ipl_tab5 = st.tabs([
+            "🏆 Team Wins", "📅 Season Analysis", "🏟️ Venue Stats",
+            "🪙 Toss Analysis", "⚔️ Head to Head"
+        ])
+
+        # ─── TAB 1: Team Wins ──────────────────────────────────────────
+        with ipl_tab1:
+            st.markdown("### 🏆 IPL Team Win Count")
+            win_counts = ipl_df["winner"].value_counts()
+            fig = px.bar(
+                x=win_counts.index, y=win_counts.values,
+                title="Total Wins by Team",
+                labels={"x": "Team", "y": "Wins"},
+                color=win_counts.values,
+                color_continuous_scale="YlOrRd"
+            )
+            fig.update_layout(template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#e2e8f0"), xaxis_tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Win percentage
+            st.markdown("### 📊 Win Percentage")
+            team_matches = {}
+            for _, row in ipl_df.iterrows():
+                for t in [row["team1"], row["team2"]]:
+                    team_matches[t] = team_matches.get(t, 0) + 1
+            win_pct = {t: (win_counts.get(t, 0) / team_matches.get(t, 1)) * 100
+                       for t in IPL_TEAMS}
+            win_pct_sorted = dict(sorted(win_pct.items(), key=lambda x: x[1], reverse=True))
+            fig2 = px.bar(
+                x=list(win_pct_sorted.keys()), y=list(win_pct_sorted.values()),
+                title="Win Percentage",
+                labels={"x": "Team", "y": "Win %"},
+                color=list(win_pct_sorted.values()),
+                color_continuous_scale="Viridis"
+            )
+            fig2.update_layout(template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#e2e8f0"), xaxis_tickangle=-45)
+            st.plotly_chart(fig2, use_container_width=True)
+
+        # ─── TAB 2: Season Analysis ────────────────────────────────────
+        with ipl_tab2:
+            st.markdown("### 📅 Season-wise Analysis")
+            season = st.selectbox("Select Season", sorted(ipl_df["season"].unique(), reverse=True), key="ipl_season")
+            season_df = ipl_df[ipl_df["season"] == season]
+
+            sc1, sc2, sc3 = st.columns(3)
+            sc1.metric("Matches Played", len(season_df))
+            sc2.metric("Avg Score", f"{(season_df['team1_score'].mean() + season_df['team2_score'].mean()) / 2:.0f}")
+            sc3.metric("Highest Score", max(season_df["team1_score"].max(), season_df["team2_score"].max()))
+
+            season_wins = season_df["winner"].value_counts()
+            fig = px.pie(
+                names=season_wins.index, values=season_wins.values,
+                title=f"IPL {season} — Wins by Team",
+                color_discrete_sequence=px.colors.qualitative.Set3
+            )
+            fig.update_layout(template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"))
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Score distribution per season
+            all_scores = pd.concat([
+                season_df["team1_score"].rename("score"),
+                season_df["team2_score"].rename("score")
+            ])
+            fig3 = px.histogram(
+                all_scores, nbins=25,
+                title=f"Score Distribution — IPL {season}",
+                labels={"value": "Score", "count": "Frequency"},
+                color_discrete_sequence=["#FF6B35"]
+            )
+            fig3.update_layout(template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#e2e8f0"), showlegend=False)
+            st.plotly_chart(fig3, use_container_width=True)
+
+        # ─── TAB 3: Venue Stats ────────────────────────────────────────
+        with ipl_tab3:
+            st.markdown("### 🏟️ Venue Statistics")
+            venue_stats = ipl_df.groupby("venue").agg(
+                matches=("match_id", "count"),
+                avg_score_t1=("team1_score", "mean"),
+                avg_score_t2=("team2_score", "mean"),
+                highest=("team1_score", "max"),
+            ).reset_index()
+            venue_stats["avg_score"] = (venue_stats["avg_score_t1"] + venue_stats["avg_score_t2"]) / 2
+            venue_stats = venue_stats.sort_values("avg_score", ascending=False)
+
+            fig = px.bar(
+                venue_stats, x="venue", y="avg_score",
+                title="Average Score by Venue",
+                labels={"venue": "Venue", "avg_score": "Avg Score"},
+                color="avg_score", color_continuous_scale="Magma"
+            )
+            fig.update_layout(template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#e2e8f0"), xaxis_tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+
+            st.dataframe(venue_stats[["venue", "matches", "avg_score", "highest"]].round(1),
+                         use_container_width=True)
+
+        # ─── TAB 4: Toss Analysis ──────────────────────────────────────
+        with ipl_tab4:
+            st.markdown("### 🪙 Toss Impact Analysis")
+
+            # Toss winner = match winner?
+            ipl_df["toss_winner_won"] = ipl_df["toss_winner"] == ipl_df["winner"]
+            toss_impact = ipl_df["toss_winner_won"].value_counts()
+            fig = px.pie(
+                names=["Toss Winner Won Match", "Toss Winner Lost Match"],
+                values=[toss_impact.get(True, 0), toss_impact.get(False, 0)],
+                title="Does Winning Toss = Winning Match?",
+                color_discrete_sequence=["#F7C948", "#8B5CF6"]
+            )
+            fig.update_layout(template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"))
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Bat vs Field decision impact
+            toss_dec = ipl_df.groupby("toss_decision").apply(
+                lambda x: (x["toss_winner"] == x["winner"]).mean() * 100
+            ).reset_index()
+            toss_dec.columns = ["Decision", "Win %"]
+            tc1, tc2 = st.columns(2)
+            tc1.metric("🏏 Bat First Win %", f"{toss_dec[toss_dec['Decision']=='bat']['Win %'].values[0]:.1f}%")
+            tc2.metric("🏟️ Field First Win %", f"{toss_dec[toss_dec['Decision']=='field']['Win %'].values[0]:.1f}%")
+
+        # ─── TAB 5: Head to Head ───────────────────────────────────────
+        with ipl_tab5:
+            st.markdown("### ⚔️ Head-to-Head Comparison")
+            hc1, hc2 = st.columns(2)
+            with hc1:
+                h2h_team1 = st.selectbox("Team 1", IPL_TEAMS, index=0, key="h2h_t1")
+            with hc2:
+                h2h_team2 = st.selectbox("Team 2", [t for t in IPL_TEAMS if t != h2h_team1], key="h2h_t2")
+
+            h2h = ipl_df[((ipl_df["team1"] == h2h_team1) & (ipl_df["team2"] == h2h_team2)) |
+                         ((ipl_df["team1"] == h2h_team2) & (ipl_df["team2"] == h2h_team1))]
+
+            if len(h2h) > 0:
+                t1_wins = len(h2h[h2h["winner"] == h2h_team1])
+                t2_wins = len(h2h[h2h["winner"] == h2h_team2])
+                hm1, hm2, hm3 = st.columns(3)
+                hm1.metric(f"{IPL_TEAM_SHORT[h2h_team1]} Wins", t1_wins)
+                hm2.metric("Total Matches", len(h2h))
+                hm3.metric(f"{IPL_TEAM_SHORT[h2h_team2]} Wins", t2_wins)
+
+                fig = go.Figure(go.Bar(
+                    x=[IPL_TEAM_SHORT[h2h_team1], IPL_TEAM_SHORT[h2h_team2]],
+                    y=[t1_wins, t2_wins],
+                    marker=dict(color=["#FF6B35", "#8B5CF6"]),
+                    text=[t1_wins, t2_wins], textposition="auto"
+                ))
+                fig.update_layout(title=f"{IPL_TEAM_SHORT[h2h_team1]} vs {IPL_TEAM_SHORT[h2h_team2]} — Head to Head",
+                    template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"))
+                st.plotly_chart(fig, use_container_width=True)
+
+                st.markdown("#### 📋 Recent Matches")
+                display_cols = ["season", "team1_short", "team2_short", "venue",
+                                "team1_score", "team2_score", "winner_short",
+                                "win_margin", "player_of_match"]
+                st.dataframe(h2h[display_cols].sort_values("season", ascending=False).head(20),
+                             use_container_width=True)
+            else:
+                st.info("No head-to-head matches found between these teams.")
+
+        # ─── Full IPL Data Table ───────────────────────────────────────
+        st.markdown("---")
+        st.markdown("### 📋 Full IPL Dataset")
+        display_cols = ["season", "team1_short", "team2_short", "city",
+                        "team1_score", "team2_score", "winner_short",
+                        "win_margin", "player_of_match", "match_phase"]
+        st.dataframe(ipl_df[display_cols].sort_values(["season", "match_id"], ascending=[False, False]).head(100),
+                     use_container_width=True)
+
+    except FileNotFoundError:
+        st.warning("IPL data not found. Generating...")
+        from data.generate_ipl_data import generate_ipl_data
+        ipl_df = generate_ipl_data(2000)
+        ipl_df.to_csv(os.path.join(data_dir, "ipl.csv"), index=False)
+        st.success("✅ IPL data generated! Please refresh the page.")

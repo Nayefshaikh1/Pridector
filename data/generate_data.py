@@ -187,6 +187,193 @@ TEAM_STRENGTH = {
     "West Indies": 68, "Afghanistan": 70,
 }
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# IPL DATA
+# ═══════════════════════════════════════════════════════════════════════════════
+
+IPL_TEAMS = [
+    "Chennai Super Kings", "Mumbai Indians", "Royal Challengers Bengaluru",
+    "Kolkata Knight Riders", "Delhi Capitals", "Punjab Kings",
+    "Rajasthan Royals", "Sunrisers Hyderabad", "Gujarat Titans",
+    "Lucknow Super Giants"
+]
+
+IPL_TEAM_SHORT = {
+    "Chennai Super Kings": "CSK", "Mumbai Indians": "MI",
+    "Royal Challengers Bengaluru": "RCB", "Kolkata Knight Riders": "KKR",
+    "Delhi Capitals": "DC", "Punjab Kings": "PBKS",
+    "Rajasthan Royals": "RR", "Sunrisers Hyderabad": "SRH",
+    "Gujarat Titans": "GT", "Lucknow Super Giants": "LSG",
+}
+
+IPL_VENUES = {
+    "MA Chidambaram Stadium, Chennai": {"city": "Chennai", "home_team": "Chennai Super Kings", "pitch": "spin"},
+    "Wankhede Stadium, Mumbai": {"city": "Mumbai", "home_team": "Mumbai Indians", "pitch": "batting"},
+    "M. Chinnaswamy Stadium, Bengaluru": {"city": "Bengaluru", "home_team": "Royal Challengers Bengaluru", "pitch": "batting"},
+    "Eden Gardens, Kolkata": {"city": "Kolkata", "home_team": "Kolkata Knight Riders", "pitch": "balanced"},
+    "Arun Jaitley Stadium, Delhi": {"city": "Delhi", "home_team": "Delhi Capitals", "pitch": "balanced"},
+    "IS Bindra Stadium, Mohali": {"city": "Mohali", "home_team": "Punjab Kings", "pitch": "pace"},
+    "Sawai Mansingh Stadium, Jaipur": {"city": "Jaipur", "home_team": "Rajasthan Royals", "pitch": "spin"},
+    "Rajiv Gandhi Intl. Stadium, Hyderabad": {"city": "Hyderabad", "home_team": "Sunrisers Hyderabad", "pitch": "batting"},
+    "Narendra Modi Stadium, Ahmedabad": {"city": "Ahmedabad", "home_team": "Gujarat Titans", "pitch": "balanced"},
+    "BRSABV Ekana Stadium, Lucknow": {"city": "Lucknow", "home_team": "Lucknow Super Giants", "pitch": "balanced"},
+    "Himachal Pradesh Cricket Association, Dharamsala": {"city": "Dharamsala", "home_team": None, "pitch": "pace"},
+    "Maharashtra Cricket Association, Pune": {"city": "Pune", "home_team": None, "pitch": "balanced"},
+}
+
+IPL_BATSMEN = {
+    "Chennai Super Kings": [
+        {"name": "Ruturaj Gaikwad", "avg": 38.5, "sr": 135.2, "style": "right", "role": "opener"},
+        {"name": "Devon Conway", "avg": 36.2, "sr": 128.7, "style": "left", "role": "opener"},
+        {"name": "Shivam Dube", "avg": 29.8, "sr": 148.3, "style": "left", "role": "middle"},
+        {"name": "Ravindra Jadeja", "avg": 26.5, "sr": 132.1, "style": "left", "role": "lower"},
+        {"name": "MS Dhoni", "avg": 39.1, "sr": 135.9, "style": "right", "role": "lower"},
+    ],
+    "Mumbai Indians": [
+        {"name": "Rohit Sharma", "avg": 31.2, "sr": 130.6, "style": "right", "role": "opener"},
+        {"name": "Ishan Kishan", "avg": 28.5, "sr": 135.8, "style": "left", "role": "opener"},
+        {"name": "Suryakumar Yadav", "avg": 33.8, "sr": 145.7, "style": "right", "role": "top"},
+        {"name": "Tilak Varma", "avg": 32.1, "sr": 138.4, "style": "left", "role": "middle"},
+        {"name": "Hardik Pandya", "avg": 30.5, "sr": 152.3, "style": "right", "role": "lower"},
+    ],
+    "Royal Challengers Bengaluru": [
+        {"name": "Virat Kohli", "avg": 37.2, "sr": 131.6, "style": "right", "role": "opener"},
+        {"name": "Faf du Plessis", "avg": 34.1, "sr": 136.2, "style": "right", "role": "opener"},
+        {"name": "Glenn Maxwell", "avg": 27.8, "sr": 154.5, "style": "right", "role": "middle"},
+        {"name": "Rajat Patidar", "avg": 33.2, "sr": 142.8, "style": "right", "role": "top"},
+        {"name": "Dinesh Karthik", "avg": 26.3, "sr": 148.2, "style": "right", "role": "lower"},
+    ],
+    "Kolkata Knight Riders": [
+        {"name": "Sunil Narine", "avg": 22.5, "sr": 158.3, "style": "left", "role": "opener"},
+        {"name": "Phil Salt", "avg": 35.6, "sr": 162.1, "style": "right", "role": "opener"},
+        {"name": "Shreyas Iyer", "avg": 33.4, "sr": 130.2, "style": "right", "role": "top"},
+        {"name": "Nitish Rana", "avg": 27.8, "sr": 133.5, "style": "left", "role": "middle"},
+        {"name": "Andre Russell", "avg": 29.1, "sr": 177.8, "style": "right", "role": "lower"},
+    ],
+    "Delhi Capitals": [
+        {"name": "David Warner", "avg": 37.5, "sr": 140.1, "style": "left", "role": "opener"},
+        {"name": "Prithvi Shaw", "avg": 26.8, "sr": 147.2, "style": "right", "role": "opener"},
+        {"name": "Rishabh Pant", "avg": 35.2, "sr": 148.7, "style": "left", "role": "middle"},
+        {"name": "Tristan Stubbs", "avg": 28.4, "sr": 155.3, "style": "right", "role": "middle"},
+        {"name": "Axar Patel", "avg": 22.1, "sr": 138.5, "style": "left", "role": "lower"},
+    ],
+    "Punjab Kings": [
+        {"name": "Shikhar Dhawan", "avg": 35.1, "sr": 126.8, "style": "left", "role": "opener"},
+        {"name": "Jonny Bairstow", "avg": 31.2, "sr": 142.5, "style": "right", "role": "opener"},
+        {"name": "Liam Livingstone", "avg": 25.8, "sr": 158.3, "style": "right", "role": "middle"},
+        {"name": "Sam Curran", "avg": 22.4, "sr": 137.1, "style": "left", "role": "lower"},
+        {"name": "Jitesh Sharma", "avg": 24.5, "sr": 152.1, "style": "right", "role": "lower"},
+    ],
+    "Rajasthan Royals": [
+        {"name": "Yashasvi Jaiswal", "avg": 34.8, "sr": 149.2, "style": "left", "role": "opener"},
+        {"name": "Jos Buttler", "avg": 36.5, "sr": 144.8, "style": "right", "role": "opener"},
+        {"name": "Sanju Samson", "avg": 29.3, "sr": 136.5, "style": "right", "role": "top"},
+        {"name": "Shimron Hetmyer", "avg": 27.2, "sr": 161.4, "style": "left", "role": "middle"},
+        {"name": "Riyan Parag", "avg": 21.5, "sr": 131.2, "style": "right", "role": "middle"},
+    ],
+    "Sunrisers Hyderabad": [
+        {"name": "Travis Head", "avg": 36.2, "sr": 158.5, "style": "left", "role": "opener"},
+        {"name": "Abhishek Sharma", "avg": 25.8, "sr": 152.3, "style": "left", "role": "opener"},
+        {"name": "Heinrich Klaasen", "avg": 38.5, "sr": 171.2, "style": "right", "role": "middle"},
+        {"name": "Aiden Markram", "avg": 28.1, "sr": 128.4, "style": "right", "role": "top"},
+        {"name": "Abdul Samad", "avg": 20.4, "sr": 146.8, "style": "right", "role": "lower"},
+    ],
+    "Gujarat Titans": [
+        {"name": "Shubman Gill", "avg": 36.8, "sr": 131.5, "style": "right", "role": "opener"},
+        {"name": "Wriddhiman Saha", "avg": 24.5, "sr": 128.3, "style": "right", "role": "opener"},
+        {"name": "Sai Sudharsan", "avg": 31.2, "sr": 134.7, "style": "left", "role": "top"},
+        {"name": "David Miller", "avg": 31.8, "sr": 142.5, "style": "left", "role": "middle"},
+        {"name": "Rahul Tewatia", "avg": 22.3, "sr": 137.8, "style": "left", "role": "lower"},
+    ],
+    "Lucknow Super Giants": [
+        {"name": "KL Rahul", "avg": 38.2, "sr": 133.5, "style": "right", "role": "opener"},
+        {"name": "Quinton de Kock", "avg": 34.5, "sr": 141.2, "style": "left", "role": "opener"},
+        {"name": "Nicholas Pooran", "avg": 28.5, "sr": 155.8, "style": "left", "role": "middle"},
+        {"name": "Ayush Badoni", "avg": 25.2, "sr": 138.4, "style": "right", "role": "middle"},
+        {"name": "Marcus Stoinis", "avg": 27.8, "sr": 145.2, "style": "right", "role": "lower"},
+    ],
+}
+
+IPL_BOWLERS = {
+    "Chennai Super Kings": [
+        {"name": "Deepak Chahar", "avg": 26.5, "sr": 18.2, "econ": 7.8, "type": "fast"},
+        {"name": "Tushar Deshpande", "avg": 29.8, "sr": 20.1, "econ": 8.9, "type": "fast"},
+        {"name": "Ravindra Jadeja", "avg": 30.2, "sr": 22.5, "econ": 7.2, "type": "spin"},
+        {"name": "Maheesh Theekshana", "avg": 24.1, "sr": 17.5, "econ": 7.5, "type": "spin"},
+        {"name": "Matheesha Pathirana", "avg": 22.8, "sr": 15.2, "econ": 8.1, "type": "fast"},
+    ],
+    "Mumbai Indians": [
+        {"name": "Jasprit Bumrah", "avg": 23.5, "sr": 16.8, "econ": 7.4, "type": "fast"},
+        {"name": "Piyush Chawla", "avg": 28.5, "sr": 20.5, "econ": 7.9, "type": "spin"},
+        {"name": "Jason Behrendorff", "avg": 27.2, "sr": 19.1, "econ": 8.2, "type": "fast"},
+        {"name": "Hardik Pandya", "avg": 31.5, "sr": 24.2, "econ": 8.5, "type": "fast"},
+        {"name": "Akash Madhwal", "avg": 25.1, "sr": 17.8, "econ": 7.6, "type": "fast"},
+    ],
+    "Royal Challengers Bengaluru": [
+        {"name": "Mohammed Siraj", "avg": 27.5, "sr": 19.5, "econ": 8.5, "type": "fast"},
+        {"name": "Wanindu Hasaranga", "avg": 22.1, "sr": 15.8, "econ": 7.3, "type": "spin"},
+        {"name": "Harshal Patel", "avg": 24.8, "sr": 17.2, "econ": 8.2, "type": "fast"},
+        {"name": "Karn Sharma", "avg": 30.5, "sr": 22.1, "econ": 7.8, "type": "spin"},
+        {"name": "Yash Dayal", "avg": 28.2, "sr": 20.5, "econ": 8.8, "type": "fast"},
+    ],
+    "Kolkata Knight Riders": [
+        {"name": "Sunil Narine", "avg": 24.5, "sr": 18.2, "econ": 6.5, "type": "spin"},
+        {"name": "Varun Chakaravarthy", "avg": 26.8, "sr": 19.5, "econ": 7.1, "type": "spin"},
+        {"name": "Mitchell Starc", "avg": 22.5, "sr": 15.1, "econ": 8.8, "type": "fast"},
+        {"name": "Andre Russell", "avg": 28.5, "sr": 20.8, "econ": 8.5, "type": "fast"},
+        {"name": "Harshit Rana", "avg": 25.2, "sr": 17.5, "econ": 8.2, "type": "fast"},
+    ],
+    "Delhi Capitals": [
+        {"name": "Anrich Nortje", "avg": 23.8, "sr": 16.2, "econ": 8.1, "type": "fast"},
+        {"name": "Kuldeep Yadav", "avg": 24.5, "sr": 17.8, "econ": 7.5, "type": "spin"},
+        {"name": "Axar Patel", "avg": 28.2, "sr": 21.5, "econ": 7.0, "type": "spin"},
+        {"name": "Ishant Sharma", "avg": 30.5, "sr": 22.8, "econ": 8.5, "type": "fast"},
+        {"name": "Mukesh Kumar", "avg": 27.5, "sr": 19.8, "econ": 8.3, "type": "fast"},
+    ],
+    "Punjab Kings": [
+        {"name": "Arshdeep Singh", "avg": 24.2, "sr": 17.1, "econ": 8.4, "type": "fast"},
+        {"name": "Kagiso Rabada", "avg": 22.8, "sr": 15.5, "econ": 8.0, "type": "fast"},
+        {"name": "Rahul Chahar", "avg": 26.5, "sr": 19.2, "econ": 7.8, "type": "spin"},
+        {"name": "Sam Curran", "avg": 28.8, "sr": 21.5, "econ": 8.5, "type": "fast"},
+        {"name": "Harpreet Brar", "avg": 29.5, "sr": 22.1, "econ": 7.5, "type": "spin"},
+    ],
+    "Rajasthan Royals": [
+        {"name": "Trent Boult", "avg": 25.1, "sr": 17.5, "econ": 8.0, "type": "fast"},
+        {"name": "Yuzvendra Chahal", "avg": 23.5, "sr": 16.8, "econ": 7.5, "type": "spin"},
+        {"name": "Sandeep Sharma", "avg": 27.8, "sr": 20.2, "econ": 7.8, "type": "fast"},
+        {"name": "Ravichandran Ashwin", "avg": 28.5, "sr": 21.5, "econ": 6.8, "type": "spin"},
+        {"name": "Nandre Burger", "avg": 26.2, "sr": 18.5, "econ": 8.5, "type": "fast"},
+    ],
+    "Sunrisers Hyderabad": [
+        {"name": "Bhuvneshwar Kumar", "avg": 25.8, "sr": 18.5, "econ": 7.3, "type": "fast"},
+        {"name": "Pat Cummins", "avg": 24.2, "sr": 17.1, "econ": 8.5, "type": "fast"},
+        {"name": "T Natarajan", "avg": 27.5, "sr": 20.2, "econ": 8.2, "type": "fast"},
+        {"name": "Shahbaz Ahmed", "avg": 30.2, "sr": 23.5, "econ": 7.8, "type": "spin"},
+        {"name": "Jaydev Unadkat", "avg": 28.8, "sr": 21.2, "econ": 8.5, "type": "fast"},
+    ],
+    "Gujarat Titans": [
+        {"name": "Mohammed Shami", "avg": 22.5, "sr": 15.2, "econ": 8.0, "type": "fast"},
+        {"name": "Rashid Khan", "avg": 20.2, "sr": 14.5, "econ": 6.5, "type": "spin"},
+        {"name": "Noor Ahmad", "avg": 25.8, "sr": 18.2, "econ": 7.2, "type": "spin"},
+        {"name": "Mohit Sharma", "avg": 28.5, "sr": 21.1, "econ": 8.5, "type": "fast"},
+        {"name": "Umesh Yadav", "avg": 29.2, "sr": 21.8, "econ": 8.8, "type": "fast"},
+    ],
+    "Lucknow Super Giants": [
+        {"name": "Mark Wood", "avg": 24.5, "sr": 16.8, "econ": 8.2, "type": "fast"},
+        {"name": "Ravi Bishnoi", "avg": 25.2, "sr": 18.1, "econ": 7.5, "type": "spin"},
+        {"name": "Avesh Khan", "avg": 26.8, "sr": 19.5, "econ": 8.5, "type": "fast"},
+        {"name": "Krunal Pandya", "avg": 30.5, "sr": 23.2, "econ": 7.2, "type": "spin"},
+        {"name": "Naveen-ul-Haq", "avg": 24.2, "sr": 17.5, "econ": 8.0, "type": "fast"},
+    ],
+}
+
+IPL_TEAM_STRENGTH = {
+    "Chennai Super Kings": 88, "Mumbai Indians": 86, "Royal Challengers Bengaluru": 82,
+    "Kolkata Knight Riders": 85, "Delhi Capitals": 78, "Punjab Kings": 72,
+    "Rajasthan Royals": 83, "Sunrisers Hyderabad": 84, "Gujarat Titans": 85,
+    "Lucknow Super Giants": 79,
+}
+
 
 def generate_match_data(n_matches=3000):
     """Generate realistic cricket match data."""
@@ -519,29 +706,261 @@ def generate_bowling_data(n_innings=5000):
     return pd.DataFrame(records)
 
 
+def generate_ipl_match_data(n_matches=2000):
+    """Generate realistic IPL match data."""
+    np.random.seed(789)
+    records = []
+
+    for i in range(n_matches):
+        team1, team2 = np.random.choice(IPL_TEAMS, size=2, replace=False)
+        venue = np.random.choice(list(IPL_VENUES.keys()))
+        venue_info = IPL_VENUES[venue]
+        pitch_type = venue_info["pitch"]
+
+        # Home advantage
+        team1_home = 1 if venue_info["home_team"] == team1 else 0
+        team2_home = 1 if venue_info["home_team"] == team2 else 0
+
+        # Toss
+        toss_winner = np.random.choice([team1, team2])
+        toss_decision = np.random.choice(["bat", "field"], p=[0.35, 0.65])
+
+        # Calculate win probability
+        strength_diff = IPL_TEAM_STRENGTH[team1] - IPL_TEAM_STRENGTH[team2]
+        home_advantage = (team1_home - team2_home) * 10  # Home advantage is bigger in IPL
+        toss_advantage = 4 if toss_winner == team1 else -4
+
+        # Pitch factor for IPL teams
+        pitch_factor = 0
+        spin_strong = ["Chennai Super Kings", "Kolkata Knight Riders", "Rajasthan Royals"]
+        pace_strong = ["Mumbai Indians", "Sunrisers Hyderabad", "Gujarat Titans"]
+        if pitch_type == "spin" and team1 in spin_strong: pitch_factor += 5
+        if pitch_type == "spin" and team2 in spin_strong: pitch_factor -= 5
+        if pitch_type == "pace" and team1 in pace_strong: pitch_factor += 5
+        if pitch_type == "pace" and team2 in pace_strong: pitch_factor -= 5
+
+        logit = (strength_diff + home_advantage + toss_advantage + pitch_factor) / 25
+        prob_team1_wins = 1 / (1 + np.exp(-logit))
+        prob_team1_wins += np.random.normal(0, 0.08)  # IPL is more unpredictable
+        prob_team1_wins = np.clip(prob_team1_wins, 0.15, 0.85)
+
+        winner = team1 if np.random.random() < prob_team1_wins else team2
+
+        # Generate T20 scores (IPL only)
+        base_score = np.random.normal(170, 22)
+        if pitch_type == "batting": base_score += 15
+        elif pitch_type == "pace": base_score -= 8
+
+        team1_score = int(max(95, base_score + np.random.normal(0, 18)))
+        if winner == team1:
+            team2_score = int(max(70, team1_score - np.random.randint(3, 45)))
+        else:
+            team2_score = int(max(team1_score + 1, team1_score + np.random.randint(1, 25)))
+
+        records.append({
+            "match_id": i + 1,
+            "team1": team1,
+            "team2": team2,
+            "venue": venue,
+            "pitch_type": pitch_type,
+            "match_format": "IPL",
+            "toss_winner": toss_winner,
+            "toss_decision": toss_decision,
+            "team1_home": team1_home,
+            "team2_home": team2_home,
+            "team1_strength": IPL_TEAM_STRENGTH[team1],
+            "team2_strength": IPL_TEAM_STRENGTH[team2],
+            "team1_score": team1_score,
+            "team2_score": team2_score,
+            "winner": winner,
+        })
+
+    return pd.DataFrame(records)
+
+
+def generate_ipl_batting_data(n_innings=3000):
+    """Generate realistic IPL batting performance data."""
+    np.random.seed(321)
+    records = []
+
+    all_batsmen = []
+    for team, players in IPL_BATSMEN.items():
+        for p in players:
+            all_batsmen.append({**p, "team": team})
+
+    for i in range(n_innings):
+        batsman = np.random.choice(all_batsmen)
+        opponent = np.random.choice([t for t in IPL_TEAMS if t != batsman["team"]])
+        venue = np.random.choice(list(IPL_VENUES.keys()))
+        venue_info = IPL_VENUES[venue]
+
+        base_avg = batsman["avg"]
+
+        pitch_bonus = 0
+        if venue_info["pitch"] == "batting": pitch_bonus = 6
+        elif venue_info["pitch"] == "pace": pitch_bonus = -4
+        elif venue_info["pitch"] == "spin":
+            pitch_bonus = -3 if batsman["style"] == "left" else -2
+
+        is_home = 1 if venue_info["home_team"] == batsman["team"] else 0
+        home_bonus = 5 if is_home else 0
+
+        opp_bowling_factor = (100 - IPL_TEAM_STRENGTH[opponent]) / 25
+
+        expected_runs = (base_avg + pitch_bonus + home_bonus + opp_bowling_factor) * 0.7
+        runs = int(max(0, np.random.exponential(expected_runs * 0.7)))
+        runs = min(runs, 120)
+
+        if np.random.random() < 0.10: runs = 0  # Slightly higher duck rate in T20
+
+        sr = batsman["sr"] + np.random.normal(0, 20)
+        sr = max(60, sr)
+        balls_faced = max(1, int(runs / (sr / 100)))
+
+        fours = int(runs * np.random.uniform(0.25, 0.4) / 4)
+        sixes = int(runs * np.random.uniform(0.1, 0.3) / 6)
+        not_out = 1 if np.random.random() < 0.18 else 0
+
+        position_map = {"opener": np.random.choice([1, 2]), "top": np.random.choice([3, 4]),
+                        "middle": np.random.choice([5, 6]), "lower": np.random.choice([6, 7])}
+        batting_position = position_map.get(batsman["role"], 5)
+
+        records.append({
+            "innings_id": i + 1,
+            "batsman": batsman["name"],
+            "team": batsman["team"],
+            "opponent": opponent,
+            "venue": venue,
+            "pitch_type": venue_info["pitch"],
+            "match_format": "IPL",
+            "batting_avg": batsman["avg"],
+            "strike_rate": batsman["sr"],
+            "batting_style": batsman["style"],
+            "batting_position": batting_position,
+            "is_home": is_home,
+            "opponent_strength": IPL_TEAM_STRENGTH[opponent],
+            "runs_scored": runs,
+            "balls_faced": balls_faced,
+            "fours": fours,
+            "sixes": sixes,
+            "not_out": not_out,
+        })
+
+    return pd.DataFrame(records)
+
+
+def generate_ipl_bowling_data(n_innings=3000):
+    """Generate realistic IPL bowling performance data."""
+    np.random.seed(654)
+    records = []
+
+    all_bowlers = []
+    for team, players in IPL_BOWLERS.items():
+        for p in players:
+            all_bowlers.append({**p, "team": team})
+
+    for i in range(n_innings):
+        bowler = np.random.choice(all_bowlers)
+        opponent = np.random.choice([t for t in IPL_TEAMS if t != bowler["team"]])
+        venue = np.random.choice(list(IPL_VENUES.keys()))
+        venue_info = IPL_VENUES[venue]
+
+        base_wicket_prob = 10 / bowler["avg"]
+
+        pitch_bonus = 0
+        if venue_info["pitch"] == "pace" and bowler["type"] == "fast": pitch_bonus = 0.12
+        elif venue_info["pitch"] == "spin" and bowler["type"] == "spin": pitch_bonus = 0.18
+        elif venue_info["pitch"] == "batting": pitch_bonus = -0.08
+
+        is_home = 1 if venue_info["home_team"] == bowler["team"] else 0
+        home_bonus = 0.08 if is_home else 0
+
+        opp_batting_factor = (100 - IPL_TEAM_STRENGTH[opponent]) / 250
+
+        overs = np.random.choice([2, 3, 4], p=[0.1, 0.2, 0.7])
+
+        wicket_prob_per_over = base_wicket_prob + pitch_bonus + home_bonus + opp_batting_factor
+        wickets = sum(1 for _ in range(overs) if np.random.random() < wicket_prob_per_over)
+        wickets = min(wickets, 4)
+
+        base_econ = bowler["econ"] + np.random.normal(0, 1.5)
+        if venue_info["pitch"] == "batting": base_econ += 1.0
+        elif venue_info["pitch"] == "pace" and bowler["type"] == "fast": base_econ -= 0.5
+        elif venue_info["pitch"] == "spin" and bowler["type"] == "spin": base_econ -= 0.5
+        base_econ = max(4.0, base_econ)
+        runs_conceded = int(max(0, overs * base_econ + np.random.normal(0, 4)))
+
+        maidens = 0  # Rare in T20/IPL
+        if np.random.random() < 0.03: maidens = 1
+
+        dot_ball_pct = max(0.2, 0.45 - (base_econ - 6) * 0.05 + np.random.normal(0, 0.05))
+        dot_balls = int(overs * 6 * dot_ball_pct)
+
+        records.append({
+            "innings_id": i + 1,
+            "bowler": bowler["name"],
+            "team": bowler["team"],
+            "opponent": opponent,
+            "venue": venue,
+            "pitch_type": venue_info["pitch"],
+            "match_format": "IPL",
+            "bowling_avg": bowler["avg"],
+            "bowling_sr": bowler["sr"],
+            "bowling_econ": bowler["econ"],
+            "bowling_type": bowler["type"],
+            "is_home": is_home,
+            "opponent_strength": IPL_TEAM_STRENGTH[opponent],
+            "overs_bowled": overs,
+            "runs_conceded": runs_conceded,
+            "wickets_taken": wickets,
+            "maidens": maidens,
+            "dot_balls": dot_balls,
+        })
+
+    return pd.DataFrame(records)
+
+
 def main():
     """Generate and save all datasets."""
     data_dir = os.path.dirname(os.path.abspath(__file__))
 
-    print("🏏 Generating Cricket Match Data...")
+    print("🏏 Generating International Cricket Match Data...")
     match_df = generate_match_data(3000)
     match_df.to_csv(os.path.join(data_dir, "matches.csv"), index=False)
     print(f"   ✅ Generated {len(match_df)} match records")
 
-    print("🏏 Generating Batting Performance Data...")
+    print("🏏 Generating International Batting Performance Data...")
     batting_df = generate_batting_data(5000)
     batting_df.to_csv(os.path.join(data_dir, "batting.csv"), index=False)
     print(f"   ✅ Generated {len(batting_df)} batting records")
 
-    print("🏏 Generating Bowling Performance Data...")
+    print("🏏 Generating International Bowling Performance Data...")
     bowling_df = generate_bowling_data(5000)
     bowling_df.to_csv(os.path.join(data_dir, "bowling.csv"), index=False)
     print(f"   ✅ Generated {len(bowling_df)} bowling records")
 
+    print("\n🏆 Generating IPL Match Data...")
+    ipl_match_df = generate_ipl_match_data(2000)
+    ipl_match_df.to_csv(os.path.join(data_dir, "ipl_matches.csv"), index=False)
+    print(f"   ✅ Generated {len(ipl_match_df)} IPL match records")
+
+    print("🏆 Generating IPL Batting Performance Data...")
+    ipl_batting_df = generate_ipl_batting_data(3000)
+    ipl_batting_df.to_csv(os.path.join(data_dir, "ipl_batting.csv"), index=False)
+    print(f"   ✅ Generated {len(ipl_batting_df)} IPL batting records")
+
+    print("🏆 Generating IPL Bowling Performance Data...")
+    ipl_bowling_df = generate_ipl_bowling_data(3000)
+    ipl_bowling_df.to_csv(os.path.join(data_dir, "ipl_bowling.csv"), index=False)
+    print(f"   ✅ Generated {len(ipl_bowling_df)} IPL bowling records")
+
     print("\n📊 Data Summary:")
-    print(f"   Matches: {match_df.shape}")
-    print(f"   Batting: {batting_df.shape}")
-    print(f"   Bowling: {bowling_df.shape}")
+    print(f"   International Matches: {match_df.shape}")
+    print(f"   International Batting: {batting_df.shape}")
+    print(f"   International Bowling: {bowling_df.shape}")
+    print(f"   IPL Matches: {ipl_match_df.shape}")
+    print(f"   IPL Batting: {ipl_batting_df.shape}")
+    print(f"   IPL Bowling: {ipl_bowling_df.shape}")
     print("\n✅ All data saved to 'data/' directory!")
 
 
